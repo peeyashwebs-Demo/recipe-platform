@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import HeroSection from "@/components/layout/HeroSection";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeCardSkeleton from "@/components/ui/RecipeCardSkeleton";
@@ -41,12 +42,12 @@ export default async function HomePage() {
           >
             Trending This Week
           </h2>
-          <a
+          <Link
             href="/recipes"
             className="text-sm font-medium text-[var(--accent-primary)] hover:underline"
           >
             View all
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {featured.length > 0 ? (
@@ -74,12 +75,12 @@ export default async function HomePage() {
             create beautiful, structured recipes with media, timers, and smart
             ingredient scaling.
           </p>
-          <a
+          <Link
             href="/creator/new"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-[var(--accent-primary)] font-semibold text-sm hover:bg-white/90 transition-colors"
           >
             Create Recipe
-          </a>
+          </Link>
         </div>
         <div className="p-8 rounded-2xl bg-[var(--surface-1)] border border-[var(--border-subtle)]">
           <h3

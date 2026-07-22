@@ -48,7 +48,7 @@ export default function ModerationPage() {
       .eq("id", flagId);
 
     if (action === "resolved") {
-      const flag = flags.find((f) => id === flagId);
+      const flag = flags.find((f) => f.id === flagId);
       if (flag) {
         await supabase
           .from("recipes")

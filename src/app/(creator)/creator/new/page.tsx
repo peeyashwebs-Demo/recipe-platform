@@ -9,7 +9,7 @@ import {
   Save,
   Eye,
   Clock,
-  Image,
+  Image as ImageIcon,
   Send,
 } from "lucide-react";
 import Card from "@/components/ui/Card";
@@ -400,7 +400,7 @@ export default function NewRecipePage() {
                       />
                     </div>
                     <button className="flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--fg-primary)] cursor-pointer">
-                      <Image className="w-4 h-4" />
+                      <ImageIcon className="w-4 h-4" />
                       Add media
                     </button>
                   </div>

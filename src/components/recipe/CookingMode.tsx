@@ -41,25 +41,6 @@ export default function CookingMode({
   const step = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
 
-  const goNext = useCallback(() => {
-    if (!isLastStep) setCurrentStep((s) => s + 1);
-  }, [isLastStep]);
-
-  const goPrev = useCallback(() => {
-    if (currentStep > 0) setCurrentStep((s) => s - 1);
-  }, [currentStep]);
-
-  const repeatStep = useCallback(() => {
-    if (step) speak(step.text);
-  }, [step]);
-
-  const { isListening } = useVoiceNav({
-    onNext: goNext,
-    onPrevious: goPrev,
-    onRepeat: repeatStep,
-    enabled: isVoiceInputEnabled,
-  });
-
   const speak = useCallback(
     (text: string) => {
       if (!isTtsEnabled || !("speechSynthesis" in window)) return;
@@ -70,6 +51,25 @@ export default function CookingMode({
     },
     [isTtsEnabled]
   );
+
+  const goNext = useCallback(() => {
+    if (!isLastStep) setCurrentStep((s) => s + 1);
+  }, [isLastStep]);
+
+  const goPrev = useCallback(() => {
+    if (currentStep > 0) setCurrentStep((s) => s - 1);
+  }, [currentStep]);
+
+  const repeatStep = useCallback(() => {
+    if (step) speak(step.text);
+  }, [step, speak]);
+
+  const { isListening } = useVoiceNav({
+    onNext: goNext,
+    onPrevious: goPrev,
+    onRepeat: repeatStep,
+    enabled: isVoiceInputEnabled,
+  });
 
   useEffect(() => {
     if (step?.timer_seconds) {
