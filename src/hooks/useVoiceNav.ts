@@ -2,6 +2,37 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+// Minimal ambient types for the Web Speech API — not included in
+// TypeScript's default DOM lib, and only partially supported across browsers.
+interface SpeechRecognitionResultLike {
+  isFinal: boolean;
+  [index: number]: { transcript: string };
+}
+
+interface SpeechRecognitionEventLike {
+  results: ArrayLike<SpeechRecognitionResultLike>;
+}
+
+interface SpeechRecognitionLike extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
+
 interface UseVoiceNavOptions {
   onNext: () => void;
   onPrevious: () => void;
@@ -16,16 +47,17 @@ export function useVoiceNav({
   enabled = false,
 }: UseVoiceNavOptions) {
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const startListening = useCallback(() => {
     if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
       return;
     }
 
-    const SpeechRecognition =
+    const SpeechRecognitionCtor =
       window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    if (!SpeechRecognitionCtor) return;
+    const recognition = new SpeechRecognitionCtor();
     recognition.continuous = true;
     recognition.interimResults = false;
     recognition.lang = "en-US";
@@ -76,11 +108,4 @@ export function useVoiceNav({
   }, [enabled, startListening, stopListening]);
 
   return { isListening, startListening, stopListening };
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
 }

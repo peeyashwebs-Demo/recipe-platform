@@ -52,9 +52,9 @@ export default function AdminDashboard() {
 
   const adminLinks = [
     { href: "/admin/moderation", label: "Moderation Queue", description: "Review flagged content", icon: Flag, badge: flagCount },
-    { href: "/admin/users", label: "User Management", description: "Manage all users", icon: Users },
-    { href: "/admin/featured", label: "Featured Content", description: "Curate the homepage", icon: Star },
-    { href: "/admin/audit", label: "Audit Log", description: "Activity history", icon: TrendingUp },
+    { href: "/admin/users", label: "User Management", description: "Manage all users", icon: Users, badge: 0 },
+    { href: "/admin/featured", label: "Featured Content", description: "Curate the homepage", icon: Star, badge: 0 },
+    { href: "/admin/audit", label: "Audit Log", description: "Activity history", icon: TrendingUp, badge: 0 },
   ];
 
   return (

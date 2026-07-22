@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/layout/ThemeProvider";
 import AuthProvider from "@/components/layout/AuthProvider";
@@ -10,12 +10,20 @@ export const metadata: Metadata = {
   description:
     "Discover, create, and share recipes. Smart scaling, hands-free cooking mode, and a beautiful cookbook experience.",
   manifest: "/manifest.json",
-  themeColor: "#D65A31",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    apple: "/icons/icon-192.svg",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#D65A31",
 };
 
 export default function RootLayout({
