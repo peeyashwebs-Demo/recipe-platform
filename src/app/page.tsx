@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import HeroSection from "@/components/layout/HeroSection";
+import Feedback from "@/components/layout/Feedback";
+import GatedContent from "@/components/recipe/GatedContent";
 import RecipeCard from "@/components/recipe/RecipeCard";
 import RecipeCardSkeleton from "@/components/ui/RecipeCardSkeleton";
 import { createClient } from "@/lib/supabase/server";
@@ -100,6 +102,35 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      <section>
+        <div className="flex items-center gap-3 mb-5">
+          <span className="h-px w-8 bg-[var(--accent-primary)]" />
+          <span className="text-xs tracking-[0.2em] uppercase text-[var(--fg-secondary)]">
+            Members only
+          </span>
+        </div>
+        <GatedContent
+          title="See this week's creator spotlight"
+          message="Sign in to view curated tips from featured creators, seasonal ingredient notes, and early access to new recipes before they go public."
+        >
+          <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-1)] p-8 grid md:grid-cols-3 gap-6">
+            <div>
+              <h4 className="text-sm font-semibold text-[var(--fg-primary)] mb-1">This week&apos;s technique</h4>
+              <p className="text-sm text-[var(--fg-secondary)]">How Chef Mox gets a silky lentil curry every time — the two-stage spice bloom.</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-[var(--fg-primary)] mb-1">In season now</h4>
+              <p className="text-sm text-[var(--fg-secondary)]">Blood oranges are peaking — three ways to use them beyond juice.</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-[var(--fg-primary)] mb-1">Early access</h4>
+              <p className="text-sm text-[var(--fg-secondary)]">Preview three recipes going public next week, before anyone else sees them.</p>
+            </div>
+          </div>
+        </GatedContent>
+      </section>
+
+      <Feedback />
     </div>
   );
 }

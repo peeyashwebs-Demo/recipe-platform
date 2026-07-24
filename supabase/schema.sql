@@ -199,3 +199,66 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- Platform-wide feedback / testimonials (distinct from per-recipe ratings)
+create table if not exists public.platform_feedback (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  author text,
+  role text,
+  quote text not null,
+  rating smallint not null check (rating between 1 and 5),
+  avatar_seed text,
+  is_published boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.platform_feedback enable row level security;
+
+-- Anyone can read published testimonials (for the homepage feedback section)
+create policy "Published feedback is publicly readable"
+  on public.platform_feedback for select
+  using (is_published = true);
+
+-- Any authenticated user can submit feedback; it starts unpublished
+-- until an admin curates it onto the homepage.
+create policy "Authenticated users can submit feedback"
+  on public.platform_feedback for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+-- Auto-fill author/role/avatar from the user's profile on insert
+create or replace function public.fill_feedback_author()
+returns trigger as $$
+begin
+  select display_name
+  into new.author
+  from public.profiles where id = new.user_id;
+
+  if new.author is null then
+    new.author := 'MOXN member';
+  end if;
+  new.role := 'Home cook';
+  new.avatar_seed := coalesce(new.user_id::text, new.author);
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_feedback_insert
+  before insert on public.platform_feedback
+  for each row execute function public.fill_feedback_author();
+
+-- Admins can view and publish/unpublish any feedback
+create policy "Admins can read all feedback"
+  on public.platform_feedback for select
+  to authenticated
+  using (exists (
+    select 1 from public.profiles where id = auth.uid() and role = 'admin'
+  ));
+
+create policy "Admins can update feedback publish status"
+  on public.platform_feedback for update
+  to authenticated
+  using (exists (
+    select 1 from public.profiles where id = auth.uid() and role = 'admin'
+  ));

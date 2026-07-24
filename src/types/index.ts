@@ -61,7 +61,9 @@ export interface Rating {
   user_id: string;
   recipe_id: string;
   score: number;
+  comment?: string;
   created_at: string;
+  author?: Pick<User, "display_name" | "avatar_url">;
 }
 
 export interface AuditLogEntry {
